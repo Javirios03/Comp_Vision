@@ -147,5 +147,12 @@ def main(img):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD:paperpiano/detect_shapes.py
     img = cv2.imread('paperpiano\data\shapes.png')
     main(img)
+=======
+    path = "patterns/"
+    for i in range(1, 5):
+        img = cv2.imread(path + "pattern" + str(i) + ".jpg")
+        main(img)
+>>>>>>> 27b17f0936f5a12086988768f51f0efe27916181:3 - Sequence Decoder/detect_shapes.py
