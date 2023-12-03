@@ -147,5 +147,5 @@ def main(img):
 
 
 if __name__ == '__main__':
-    img = cv2.imread('paperpiano\data\WhatsApp Image 2023-12-02 at 19.04.30.jpeg')
+    img = cv2.imread('paperpiano\data\shapes.png')
     main(img)
