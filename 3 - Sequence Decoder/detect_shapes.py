@@ -94,15 +94,24 @@ def get_circles(img):
 
     return circles
 
+def point_in_contour(point, contour):
+    # point: x,y
+    # contour: x,y,w,h
+    # returns: True if point is inside contour
+    x, y, w, h = cv2.boundingRect(contour)
+    extra = 10
+    if x-extra <= point[1] <= x+w+extra and y-extra <= point[0] <= y+h+extra:
+        return True
+    else:
+        return False
+    
 def points_in_contours(points, contour):
     # points: list of points
     # contour: x,y,w,h
     # returns: list of points that are inside the contours
     points_in = []
-    x, y, w, h = cv2.boundingRect(contour)
-    extra = 10
     for point in points:
-        if x-extra <= point[1] <= x+w+extra and y-extra <= point[0] <= y+h+extra:
+        if point_in_contour(point, contour):
             points_in.append(point)
     return points_in
         
@@ -116,43 +125,50 @@ def main(img):
     contours_to_show = []
 
     for contour in contours:
-        points_in = points_in_contours(points, contour)
-        if len(points_in) == 0:
-            contours_to_show.append(contour)
-            shapes_names.append('circle')
-        
-        elif len(points_in) == 3:
-            contours_to_show.append(contour)
-            shapes_names.append('triangle')
-        elif len(points_in) == 4:
-            contours_to_show.append(contour)
-            shapes_names.append('square')
-        elif len(points_in) > 4:
-            contours_to_show.append(contour)
-            shapes_names.append('star')
+        if circles is not None:
+            x,y,r = circles[0][0]
+            # si el centro está dentro del contorno
+            if point_in_contour((x,y), contour):
+                contours_to_show.append(contour)
+                shapes_names.append('circle')
+                break
         else:
-            pass
-        # print(len(points_in))
+            points_in = points_in_contours(points, contour)
+            if len(points_in) == 0:
+                contours_to_show.append(contour)
+                shapes_names.append('circle')
+            
+            elif len(points_in) == 3:
+                contours_to_show.append(contour)
+                shapes_names.append('triangle')
+            elif len(points_in) == 4:
+                contours_to_show.append(contour)
+                shapes_names.append('square')
+            elif 7 < len(points_in)< 11:
+                contours_to_show.append(contour)
+                shapes_names.append('star')
+            else:
+                pass
+            print(len(points_in))
 
     # show contours and shapes names
     for i, contour in enumerate(contours_to_show):
         x, y, w, h = cv2.boundingRect(contour)
         cv2.putText(img, shapes_names[i], (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
         cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
-    plt.imshow(img)
-    # show points
-    plt.scatter([p[1] for p in points],[p[0] for p in points],c='r')
-    plt.show()
+    
+    return img
     
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD:paperpiano/detect_shapes.py
-    img = cv2.imread('paperpiano\data\shapes.png')
-    main(img)
-=======
-    path = "patterns/"
-    for i in range(1, 5):
-        img = cv2.imread(path + "pattern" + str(i) + ".jpg")
-        main(img)
->>>>>>> 27b17f0936f5a12086988768f51f0efe27916181:3 - Sequence Decoder/detect_shapes.py
+    # acceder a la camara y pasar la imagen frame a frame a main
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        img = main(frame)
+        cv2.imshow('frame', img)
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
