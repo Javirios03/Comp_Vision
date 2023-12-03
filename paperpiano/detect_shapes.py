@@ -113,27 +113,35 @@ def main(img):
     circles = get_circles(img)
 
     shapes_names = []
+    contours_to_show = []
 
     for contour in contours:
         points_in = points_in_contours(points, contour)
         if len(points_in) == 0:
+            contours_to_show.append(contour)
             shapes_names.append('circle')
-        if len(points_in) == 3:
+        
+        elif len(points_in) == 3:
+            contours_to_show.append(contour)
             shapes_names.append('triangle')
         elif len(points_in) == 4:
+            contours_to_show.append(contour)
             shapes_names.append('square')
-        elif len(points_in) == 10:
+        elif len(points_in) > 4:
+            contours_to_show.append(contour)
             shapes_names.append('star')
         else:
-            shapes_names.append('unknown')
+            pass
         # print(len(points_in))
 
     # show contours and shapes names
-    for i, contour in enumerate(contours):
+    for i, contour in enumerate(contours_to_show):
         x, y, w, h = cv2.boundingRect(contour)
         cv2.putText(img, shapes_names[i], (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2)
         cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
     plt.imshow(img)
+    # show points
+    plt.scatter([p[1] for p in points],[p[0] for p in points],c='r')
     plt.show()
     
 
