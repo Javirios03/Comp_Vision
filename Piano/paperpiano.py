@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 import pygame
 import time
 import threading
-from picamera2 import Picamera2 as PiCamera
+# from picamera2 import PiCamera2 as PiCamera
 
 pygame.init()
 # Inicializar el módulo mixer
 pygame.mixer.init()
+
+
 
 
 dictionary = aruco.getPredefinedDictionary(cv.aruco.DICT_4X4_50)
@@ -16,7 +18,7 @@ parameters =  aruco.DetectorParameters()
 detector = aruco.ArucoDetector(dictionary, parameters)
 
 PIANO_NOTES = ["C5","D5","E5","F5","G5","A5","B5","C6"]
-PATH = "paper_data/"
+PATH = "5 - Piano/data"
 
 PIANO_TILES = "piano_tiles.png"
 # iniciar pantalla
@@ -82,6 +84,8 @@ def piano(frame, playing, sound=False, show_piano=True):
             screen.blit(image, (0, 0))
         pygame.display.flip()
 
+        
+
     # crear un thread por cada nota que se va a reproducir
     if sound:
         if piano_notes_played:
@@ -89,8 +93,8 @@ def piano(frame, playing, sound=False, show_piano=True):
                 if note not in playing:
                     threading.Thread(target=play_song, args=(note,)).start()
 
-    return piano_notes_played
-
+    return piano_notes_played    
+ 
 
 def stream_video_rpi():
     camera = PiCamera()
@@ -107,7 +111,7 @@ def stream_video_rpi():
     while True:
         # Grab a single frame of video
         frame = camera.capture_array()
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # Display the resulting frame
         playing = piano(frame, playing)
         cv.imshow('Video', frame)
@@ -126,12 +130,16 @@ def stream_video():
         ret, frame = cap.read()
         playing = piano(frame, playing, sound=True, show_piano=True)
         cv.imshow('frame', frame)
-
+        
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
 
 
-def main():
+if __name__ == "__main__":
+    # create_marker(1, 12)
+    # read_markers()
+    # acceder a la camara y pasar la imagen frame a frame a main
+    # stream_video()
     stream_video_rpi()
