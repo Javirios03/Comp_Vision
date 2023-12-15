@@ -6,7 +6,7 @@ from Camera_Calibration import calibrating as calibration
 from Pattern_Detection import detection
 from Sequence_Decoder import decoder
 from Tracker import tracker
-from paperpiano import main as paper_piano_main
+from Piano import paperpiano
 
 
 class State(Enum):
@@ -64,7 +64,8 @@ def main():
 
         elif state == State.PAPER_PIANO:
             # Ejecutamos el piano de papel
-            paper_piano_main()
+            print("Executing paper piano")
+            paperpiano.main()
 
 
 if __name__ == "__main__":
