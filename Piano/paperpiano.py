@@ -18,7 +18,7 @@ parameters =  aruco.DetectorParameters()
 detector = aruco.ArucoDetector(dictionary, parameters)
 
 PIANO_NOTES = ["C5","D5","E5","F5","G5","A5","B5","C6"]
-PATH = "5 - Piano/data"
+PATH = "paper_data"
 
 PIANO_TILES = "piano_tiles.png"
 # iniciar pantalla
